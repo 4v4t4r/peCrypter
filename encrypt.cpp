@@ -49,6 +49,10 @@ int main()
 	for (int i = 0; i < length; i++)
 	{
 		output << "0x" << hex(rawData[i]) << ",";
+		if (i % 20 == 0)
+		{
+			output << endl;
+		}
 	}
 	output << "}";
 }
