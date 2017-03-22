@@ -48,7 +48,7 @@ int main()
 		<< " = { ";
 	for (int i = 0; i < length; i++)
 	{
-		output << hex(rawData[i]) << ",";
+		output << "0x" << hex(rawData[i]) << ",";
 	}
 	output << "}";
 }
