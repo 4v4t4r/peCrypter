@@ -54,6 +54,6 @@ int main()
 			output << endl;
 		}
 	}
-	output << "}";
+	output << "};";
 }
 
